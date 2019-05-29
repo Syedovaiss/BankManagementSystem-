@@ -1,0 +1,136 @@
+using System;
+
+
+namespace BankManagementSystem
+{
+   public class Customer_Detail
+    {
+        #region Declare variable for Customer_Detail
+        protected Int32 _IDCustomer;
+        protected string _CustomerName;
+        protected string _CustomerAddress;
+        protected string _CustomerPhone;
+        protected Int64 _CustomerNIC;
+        protected DateTime? _CustomerDate;
+        #endregion
+        #region Properties for Customer_Detail
+        public Int32 IDCustomer
+        {
+            set
+            {
+                if (value > 0)
+                {
+                    _IDCustomer = value;
+                }
+                else
+                {
+                    throw new Exception("Error in ID");
+                }
+            }
+            get
+            {
+                return this._IDCustomer;
+            }
+        }
+        public string CustomerName
+        {
+            set
+            {
+                if (value != null)
+                {
+                    _CustomerName = value;
+                }
+                else
+                {
+                    throw new Exception("Enter Employee Name");
+                }
+            }
+            get
+            {
+                return this._CustomerName;
+            }
+        }
+        public string CustomerAddress
+        {
+            set
+            {
+                if (value != null)
+                {
+                    _CustomerAddress = value;
+                }
+                else
+                {
+                    throw new Exception("Enter _Employee Address");
+                }
+            }
+            get
+            {
+                return this._CustomerAddress;
+            }
+        }
+        public string CustomerPhone
+        {
+            set
+            {
+                if (value != null)
+                {
+                    _CustomerPhone = value;
+                }
+                else
+                {
+                    throw new Exception("Enter Employee Phone No");
+                }
+            }
+            get
+            {
+                return this._CustomerPhone;
+            }
+        }
+        public Int64 CustomerNIC
+        {
+            set
+            {
+                if (value > 0)
+                {
+                    _CustomerNIC = value;
+                }
+                else
+                {
+                    throw new Exception("Enter Employee N.I.C");
+                }
+            }
+            get
+            {
+                return this._CustomerNIC;
+            }
+        }
+        public DateTime CustomerDate
+        {
+            get
+            {
+                return this._CustomerDate.HasValue ? this._CustomerDate.Value : DateTime.Now;
+            }
+            set
+            {
+                this._CustomerDate = value;
+
+            }
+        }
+        #endregion
+        #region 
+        public Customer_Detail()
+        {
+            
+        }
+        public Customer_Detail(string CustomerName, string CustomerAddress, string CustomerPhone, Int64 CustomerNIC, DateTime? CustomerDate)
+        {
+            _IDCustomer = IDCustomer;
+            _CustomerName = CustomerName;
+            _CustomerAddress = CustomerAddress;
+            _CustomerPhone = CustomerPhone;
+            _CustomerNIC = CustomerNIC;
+            _CustomerDate = CustomerDate;
+        }
+        #endregion connection
+    }
+}

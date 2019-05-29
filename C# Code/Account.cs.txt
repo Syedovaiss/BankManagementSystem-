@@ -1,0 +1,291 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Data;
+using System.Data.SqlClient;
+using System.Configuration;
+
+namespace BankManagementSystem
+{
+   public class Account:Customer_Detail
+   {
+       #region Declare variable for Customer_Detail
+       protected Int32 _AccountNumber;
+        protected string _AccountType;
+        protected string _LoginID;
+        private string _Password;
+        protected Int32 _AccountDeposit;
+        #endregion 
+        #region property
+        public string LoginID
+        {
+            set
+            {
+                if (value != null)
+                {
+                    _LoginID = value;
+                }
+                else
+                {
+                    throw new Exception("Enter Login ID");
+                }
+            }
+            get
+            {
+                return this._LoginID;
+            }
+        }
+        public string Password
+        {
+            set
+            {
+                if (value != null)
+                {
+                    _Password = value;
+                }
+                else
+                {
+                    throw new Exception("Enter Password");
+                }
+            }
+            get
+            {
+                return this._Password;
+            }
+        }
+        public Int32 AccountNumber
+        {
+            set
+            {
+                if (value > 0)
+                {
+                    _AccountNumber = value;
+                }
+                else
+                {
+                    throw new Exception("Error on id");
+                }
+            }
+            get
+            {
+                return this._AccountNumber;
+            }
+        }
+        public Int32 AccountDeposit
+        {
+            set
+            {
+                if (value > 0)
+                {
+                    _AccountDeposit = value;
+                }
+                else
+                {
+                    throw new Exception("Error on id");
+                }
+            }
+            get
+            {
+                return this._AccountDeposit;
+            }
+        }
+        public string AccountType
+        {
+            set
+            {
+                if (value != null)
+                {
+                    _AccountType = value;
+                }
+                else
+                {
+                    throw new Exception("Enter Employee Phone no");
+                }
+            }
+            get
+            {
+                return this._AccountType;
+            }
+        }
+        #endregion property
+        #region connection
+        Customer_Detail CD = new Customer_Detail();
+        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SQLCONNECTIONs"].ConnectionString);
+        SqlCommand cmd = new SqlCommand();
+        #endregion 
+        #region function
+        public void CreateAccount()
+        {
+            Console.WriteLine("CREATE ACCOUNT /n");
+            Account ac = new Account();
+            Console.WriteLine("Enter Customer ID :");
+            ac.IDCustomer = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Enter Customer Name :");
+            ac.CustomerName= Console.ReadLine();
+            Console.WriteLine("Enter Customer Address :");
+            ac.CustomerAddress = Console.ReadLine();
+            Console.WriteLine("Enter Customer Phone :");
+            ac.CustomerPhone = Console.ReadLine();
+            Console.WriteLine("Enter Customer NIC :");
+            
+            ac.CustomerNIC = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Enter Customer Date :");
+            ac.CustomerDate = Convert.ToDateTime(Console.ReadLine());
+            Console.WriteLine("Enter Customer Account Number :");
+            ac.AccountNumber =  Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Enter Customer Account Type :");
+            ac.AccountType = Console.ReadLine();
+            Console.WriteLine("Enter Customer Account Deposit :");
+            ac.AccountDeposit = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Enter Login ID :");
+            ac.LoginID = Console.ReadLine();
+            Console.WriteLine("Enter Password:");
+            ac.Password = Console.ReadLine();
+            try
+            {
+                con.Open();
+                cmd = new SqlCommand("insert into Customer_Detail([Customer Login],[Customer Password],[Customer Name],[Customer Address],[Customer Phone],[Customer NIC],[Customer Date])VALUES('" + ac.LoginID + "','" + ac.Password + "','" + ac.CustomerName + "', '" + ac.CustomerAddress + "', '" + ac.CustomerPhone + "','" + ac.CustomerNIC + "','" + ac.CustomerDate + "')", con);
+                cmd.ExecuteNonQuery();
+                cmd= new SqlCommand("insert into [Customer Account](Customer_ID,AccountNumber,[Customer Type],[Customer Deposit]) values('" + ac.IDCustomer + "', '" + ac.AccountNumber + "', '" + ac.AccountType+ "','" + ac.AccountDeposit + "')", con);
+                cmd.ExecuteNonQuery();
+                Console.WriteLine("Account Create Successfully");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("{0} exception",ex);
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+        public void ShowAccount()
+        {
+            List<string> list = new List<string>();
+            list.Add("ID:");
+            list.Add("Customer Name:");
+            list.Add("Customer Address");
+            list.Add("Customer Phone");
+            list.Add("Customer NIC");
+            list.Add("Customer Date");
+            list.Add("Account Number");
+            list.Add("Accont Type");
+            list.Add("Deposit");
+            list.Add("Withdraw");
+            Console.WriteLine("SHOW ACCOUNT /n");
+            Console.WriteLine("1.Search All Records \n");
+            Console.WriteLine("2.Search Specific Record \n");
+            int number;
+            number=Convert.ToInt16(Console.ReadLine());
+            switch (number)
+            {
+                case 1:
+                    using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SQLCONNECTIONs"].ConnectionString)) ;
+                    {
+                        con.Open();
+                        using (SqlCommand command = new SqlCommand("SP_Customer_Detail", con))
+                        {
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    for (int i = 0; i < reader.FieldCount; i++)
+                                    {
+                                        try
+                                        {
+                                            Console.WriteLine(list.ElementAt(i) + " " + reader.GetValue(i));                                                
+                                        }
+                                        catch(ArgumentOutOfRangeException)
+                                        { }
+                                        
+                                    }
+                                    Console.WriteLine();
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case 2:
+                    Account ac = new Account();
+                    using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SQLCONNECTIONs"].ConnectionString)) ;
+                    {
+                        Console.WriteLine("Enter ID");
+                        ac.IDCustomer = Convert.ToInt32(Console.ReadLine());
+                        con.Open();
+                        using (SqlCommand command = new SqlCommand("SP_Customer_SpecificRecord @ID='" +ac.IDCustomer + "'", con))
+                        {
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    for (int i = 0; i < reader.FieldCount; i++)
+                                    {
+                                        Console.WriteLine(reader.GetValue(i));
+                                    }
+                                    Console.WriteLine();
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
+        public void ModifyAccount()
+        {
+            try
+            {
+                Account ac = new Account();
+                Console.WriteLine("MODIFY ACCOUNT /n");
+                Console.WriteLine("Enter Customer ID :");
+                ac.IDCustomer = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Enter Customer Name :");
+                ac.CustomerName = Console.ReadLine();
+                Console.WriteLine("Enter Customer Address :");
+                ac.CustomerAddress = Console.ReadLine();
+                Console.WriteLine("Enter Customer Phone :");
+                con.Open();
+                cmd = new SqlCommand("SP_Customer_Update @Address='" + ac.CustomerAddress + "',@Name='" + ac.CustomerName + "', @Phone='" + ac.CustomerPhone + "',@ID='" + ac.IDCustomer + "'", con);
+                cmd.ExecuteNonQuery();
+                Console.WriteLine("Modify Sucessfully");
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+        public void DeleteAccount()
+        {
+            try
+            {
+                Account ac = new Account();
+                Console.WriteLine("DELETE ACCOUNT /n");
+                Console.WriteLine("Enter Customer ID :");
+                ac.IDCustomer = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Enter Customer Name :");
+                ac.CustomerName = Console.ReadLine();
+                Console.WriteLine("Enter Customer Address :");
+                ac.CustomerAddress = Console.ReadLine();
+                Console.WriteLine("Enter Customer Phone :");
+                con.Open();
+                cmd = new SqlCommand("SP_Customer_Detail_Delete @Customer_ID='" +ac.IDCustomer + "'", con);
+                cmd.ExecuteNonQuery();
+                Console.WriteLine("Delete Sucessfully");
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+       #endregion 
+   }
+}

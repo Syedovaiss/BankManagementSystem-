@@ -1,0 +1,66 @@
+using System;
+using BankManagementSystem;
+
+namespace BankManagementSystem
+{
+    
+    class Program
+    {
+        private void Case2()
+        {
+            Console.WriteLine("1.Create Account \n");
+            Console.WriteLine("2.Show Account \n");
+            Console.WriteLine("3.Modify Account \n");
+            Console.WriteLine("4.Delete Account \n");
+            Console.WriteLine("5.Employee Detail \n");
+            Account ac = new Account();
+            int number;
+            number = Convert.ToInt16(Console.ReadLine());
+            switch (number)
+            {
+                case 1:
+                    ac.CreateAccount();
+                    break;
+                case 2:
+                    ac.ShowAccount();
+                    break;
+                case 3:
+                    ac.ModifyAccount();
+                    break;
+                case 4:
+                    ac.DeleteAccount();
+                    break;
+                case 5:
+
+                default:
+                    Console.WriteLine("Wrong Input please Try Again");
+                    break;
+            }
+        }
+        #region Main
+        static void Main(string[] args)
+        {
+            Console.WriteLine("                                             BANK MANAGEMENT SYSTEM\n");
+            Console.WriteLine("1.Customer LOGIN \n");
+            Console.WriteLine("2.Bank System");
+            Program p = new Program();
+            Security sc = new Security();
+            int number;
+            number=Convert.ToInt16(Console.ReadLine());
+            switch (number)
+            {
+                case 1:
+                    sc.Login();
+                    break;
+                case 2:
+                 p.Case2();
+                    break;
+                default:
+                    Console.WriteLine("Wrong Input Please Try Again!!");
+                    break;
+            }
+            Console.ReadKey();
+        }
+        #endregion 
+    }
+}

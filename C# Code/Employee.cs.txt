@@ -1,0 +1,144 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BankManagementSystem
+{
+    class Employee
+    {
+        #region Declare variable for Employee
+        private Int32 _IDEmployee;
+        private string _EmployeeName;
+        private string _EmployeeAddress;
+        private string _EmployeePhone;
+        private Int64 _EmployeeNIC;
+        private DateTime? _EmployeeDate;
+        #endregion
+        #region Properties for Employee
+        public Int32 IDEmployee
+        {
+            set
+            {
+                if (value > 0)
+                {
+                    _IDEmployee = value;
+                }
+                else
+                {
+                    throw new Exception("Error on id");
+                }
+            }
+            get
+            {
+                return _IDEmployee;
+            }
+        }
+        public string EmployeeName
+        {
+            set
+            {
+                if (value != null)
+                {
+                    _EmployeeName = value;
+                }
+                else
+                {
+                    throw new Exception("Enter EmployeeName");
+                }
+            }
+            get
+            {
+                return _EmployeeName;
+            }
+        }
+        public string EmployeeAddress
+        {
+            set
+            {
+                if (value != null)
+                {
+                    _EmployeeAddress = value;
+                }
+                else
+                {
+                    throw new Exception("Enter _Employee Address");
+                }
+            }
+            get
+            {
+                return _EmployeeAddress;
+            }
+        }
+        public string EmployeePhone
+        {
+            set
+            {
+                if (value != null)
+                {
+                    _EmployeePhone = value;
+                }
+                else
+                {
+                    throw new Exception("Enter Employee Phone no");
+                }
+            }
+            get
+            {
+                return _EmployeePhone;
+            }
+        }
+        public Int64 EmployeeNIC
+        {
+            set
+            {
+                if (value > 0)
+                {
+                    _EmployeeNIC = value;
+                }
+                else
+                {
+                    throw new Exception("Enter Employee N.I.C");
+                }
+            }
+            get
+            {
+                return _EmployeeNIC;
+            }
+        }
+        public DateTime EmployeeDate
+        {
+            get
+            {
+                return this._EmployeeDate.HasValue ? this._EmployeeDate.Value : DateTime.Now;
+            }
+            set
+            {
+                this._EmployeeDate = value;
+
+            }
+        }
+        #endregion
+        #region Declare function
+        public Employee()
+        {
+            _IDEmployee = 0;
+            _EmployeeName =null ;
+            _EmployeeAddress =null ;
+            _EmployeePhone =null ;
+            _EmployeeNIC =0 ;
+        }
+        public Employee(Int32 IDEmployee, string EmployeeName, string EmployeeAddress, string EmployeePhone, Int64 EmployeeNIC, DateTime? EmployeeDate)
+        {
+            _IDEmployee = IDEmployee;
+            _EmployeeName = EmployeeName;
+            _EmployeeAddress = EmployeeAddress;
+            _EmployeePhone = EmployeePhone;
+            _EmployeeNIC = EmployeeNIC;
+            _EmployeeDate = EmployeeDate;
+        }
+        #endregion
+    }
+}
+

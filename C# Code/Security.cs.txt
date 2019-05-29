@@ -1,0 +1,252 @@
+using System;
+using System.Data.SqlClient;
+using System.Configuration;
+
+namespace BankManagementSystem
+{
+    class Security : Customer_Detail
+    {
+        #region Declare variable
+        private string _LoginID;
+        private string _Password;
+        private string _checkLogin;
+        private string _checkPassword;
+        private Int32 _Deposit;
+        private Int32 _WithDraw;
+        #endregion
+        #region connection
+        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SQLCONNECTIONs"].ConnectionString);
+        SqlCommand cmd = new SqlCommand();
+        #endregion connection
+        #region property getter/setter
+        public Int32 Deposit
+        {
+            set
+            {
+                if (value > 0)
+                {
+                    _Deposit = value;
+                }
+                else
+                {
+                    throw new Exception("Error on id");
+                }
+            }
+            get
+            {
+                return this._Deposit;
+            }
+        }
+        public Int32 WithDraw
+        {
+            set
+            {
+                if (value > 0)
+                {
+                    _WithDraw = value;
+                }
+                else
+                {
+                    throw new Exception("Error on id");
+                }
+            }
+            get
+            {
+                return this._WithDraw;
+            }
+        }
+        public string checkLogin
+        {
+            set
+            {
+                if (value != null)
+                {
+                    _checkLogin = "admin";
+                }
+                else
+                {
+                    throw new Exception("Enter Login ID");
+                }
+            }
+            get
+            {
+                return this._checkLogin = "admin";
+            }
+        }
+        public string checkPassword
+        {
+            set
+            {
+                if (value != null)
+                {
+                    _checkPassword = "54321";
+                }
+                else
+                {
+                    throw new Exception("Enter Password");
+                }
+            }
+            get
+            {
+                return this._checkPassword="54321";
+            }
+        }
+        public string LoginID
+        {
+            set
+            {
+                if (value != null)
+                {
+                    _LoginID = value;
+                }
+                else
+                {
+                    throw new Exception("Enter Login ID");
+                }
+            }
+            get
+            {
+                return this._LoginID;
+            }
+        }
+        public string Password
+        {
+            set
+            {
+                if (value != null)
+                {
+                    _Password = value;
+                }
+                else
+                {
+                    throw new Exception("Enter Password");
+                }
+            }
+            get
+            {
+                return this._Password;
+            }
+        }
+        #endregion property getter/setter
+        #region Function
+        public void Login()
+        {
+            try
+            {
+                Account ac = new Account();
+                Security sc = new Security();
+                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SQLCONNECTIONs"].ConnectionString)) ;
+                {
+                    Console.WriteLine("Enter LoginID");
+                    LoginID = Console.ReadLine();
+                    Console.WriteLine("Enter Password");
+                    Password = Console.ReadLine();
+                    con.Open();
+                    using (SqlCommand command = new SqlCommand("[SP_Customer_log&Pass] @UserName='" + LoginID + "', @Password='" + Password + "'", con))
+                    {
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                for (int i = 0; i < reader.FieldCount; i++)
+                                {
+                                    Console.WriteLine(reader.GetValue(i));
+                                }
+                                Console.WriteLine();
+                            }
+                        }
+                        if (checkPassword.Equals(Password) == true && checkLogin.Equals(LoginID) == true)
+                        {
+                            Console.WriteLine("Login Successfully");
+                            int number;
+                            Console.WriteLine("1.Deposit Money \n2.WithDraw Money ");
+                            number = Convert.ToInt16(Console.ReadLine());
+                            switch (number)
+                            {
+                                case 1:
+                                    sc.DepositMoney();
+                                    break;
+                                case 2:
+                                    sc.Withdraws();
+                                    break;
+                                default:
+                                    Console.WriteLine("Wrong Input please Try Again!!");
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Login Failed!!");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+        public void DepositMoney()
+        {
+            try
+            {
+                Account ac = new Account();
+                Security sc = new Security();
+                Customer_Detail CD = new Customer_Detail();
+                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SQLCONNECTIONs"].ConnectionString)) ;
+                {
+                    Console.WriteLine("Enter Deposit Amount");
+                    Deposit = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("Enter CustomerID");
+                    sc.IDCustomer = Convert.ToInt32(Console.ReadLine());
+                    con.Open();
+                    cmd = new SqlCommand("[SP_Customer_UpdateDeposit] @ID='" + ac.IDCustomer + "', @Deposit='" + Deposit + "'", con);
+                    cmd.ExecuteNonQuery();
+                    Console.WriteLine("Sucessfully");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+        public void Withdraws()
+        {
+            try
+            {
+            Account ac = new Account();
+            using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SQLCONNECTIONs"].ConnectionString)) ;
+            Security sc = new Security();
+            using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SQLCONNECTIONs"].ConnectionString)) ;
+            {
+                Console.WriteLine("Enter Withdraw Amount");
+                WithDraw = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Enter CustomerID");
+                sc.IDCustomer = Convert.ToInt32(Console.ReadLine());
+                con.Open();
+                cmd = new SqlCommand("[SP_Customer_UpdateWithdraw] @withdraw='" + WithDraw + "', @ID='" + sc.IDCustomer + "'", con);
+                cmd.ExecuteNonQuery();
+                Console.WriteLine("Modify Sucessfully");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                con.Close();
+            }
+                
+            }
+        #endregion
+        }
+    }
